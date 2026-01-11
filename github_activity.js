@@ -19,13 +19,25 @@ async function GetUserActivity(username){
         const data = await response.json();
 
         data.forEach(event => {
-            console.log(`Event Type: ${event.type}, Repo: ${event.repo.name}, Created At: ${event.created_at}`);
+           SendMessage(event);
         });
     }    catch (error) {
         console.error('Error fetching user activity:', error);
     }
 }
 
+function SendMessage(e){
+    switch(e.type){
+        case 'PushEvent':
+            console.log(`Pushed to ${e.repo.name} at ${e.created_at}`);
+            break;
+        case 'PullRequestEvent':
+            console.log(`Pull request in ${e.repo.name} at ${e.created_at}`);
+            break;
+        default:
+            console.log(`Other event: ${e.type} in ${e.repo.name} at ${e.created_at}`);
+    }
+}
 
 async function GetRepos(username){
     try {
